@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import NewTodoForm from "./NewTodoForm";
 import Todo from "./Todo";
+import "./TodoList.css";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 class TodoList extends Component {
   constructor(props) {
@@ -44,25 +46,31 @@ class TodoList extends Component {
   render() {
     const todos = this.state.todos.map((todo) => {
       return (
-        <Todo
-          key={todo.id}
-          id={todo.id}
-          task={todo.task}
-          completed={todo.completed}
-          removeTodo={this.remove}
-          updateTodo={this.update}
-          toggleTodo={this.toggleCompletion}
-        />
+        <CSSTransition key={todo.id} timeout={500} classNames="todo">
+          <Todo
+            key={todo.id}
+            id={todo.id}
+            task={todo.task}
+            completed={todo.completed}
+            removeTodo={this.remove}
+            updateTodo={this.update}
+            toggleTodo={this.toggleCompletion}
+          />
+        </CSSTransition>
       );
     });
     return (
-      <div>
-        <h1>Todo List!</h1>
+      <div className="TodoList">
+        <h1>
+          Get To Work! <span>An Animated Todo List Made With React Hooks.</span>
+        </h1>
         <NewTodoForm createTodo={this.create} />
-        <ul>{todos}</ul>
+
+        <ul>
+          <TransitionGroup className="todo-list">{todos}</TransitionGroup>
+        </ul>
       </div>
     );
   }
 }
-
 export default TodoList;

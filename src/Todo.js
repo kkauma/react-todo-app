@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./Todo.css";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 class Todo extends Component {
   constructor(props) {
@@ -22,7 +23,7 @@ class Todo extends Component {
   }
   handleUpdate(evt) {
     evt.preventDefault();
-    // take new task data and pass up to parent
+    //take new task data and pass up to parent
     this.props.updateTodo(this.props.id, this.state.task);
     this.setState({ isEditing: false });
   }
@@ -38,34 +39,42 @@ class Todo extends Component {
     let result;
     if (this.state.isEditing) {
       result = (
-        <div>
-          <form onSubmit={this.handleUpdate}>
+        <CSSTransition key="editing" timeout={500} classNames="form">
+          <form className="Todo-edit-form" onSubmit={this.handleUpdate}>
             <input
               type="text"
               value={this.state.task}
               name="task"
               onChange={this.handleChange}
-            ></input>
+            />
             <button>Save</button>
           </form>
-        </div>
+        </CSSTransition>
       );
     } else {
       result = (
-        <div>
-          <button onClick={this.toggleForm}>Edit</button>
-          <button onClick={this.handleRemove}>X</button>
-          <li
-            className={this.props.completed ? "completed" : ""}
-            onClick={this.handleToggle}
-          >
+        <CSSTransition key="normal" timeout={500} classNames="task-text">
+          <li className="Todo-task" onClick={this.handleToggle}>
             {this.props.task}
           </li>
-        </div>
+        </CSSTransition>
       );
     }
-    return result;
+    return (
+      <TransitionGroup
+        className={this.props.completed ? "Todo completed" : "Todo"}
+      >
+        {result}
+        <div className="Todo-buttons">
+          <button onClick={this.toggleForm}>
+            <i class="fas fa-pen" />
+          </button>
+          <button onClick={this.handleRemove}>
+            <i class="fas fa-trash" />
+          </button>
+        </div>
+      </TransitionGroup>
+    );
   }
 }
-
 export default Todo;
